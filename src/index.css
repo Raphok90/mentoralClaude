@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Colour tokens as RGB triplets so Tailwind opacity modifiers work. */
+:root {
+  --bg: 244 247 245;
+  --surface: 255 255 255;
+  --surface-2: 233 240 236;
+  --fg: 18 32 27;
+  --muted: 86 103 95;
+  --line: 214 224 219;
+  --accent: 14 107 78;
+  --accent-fg: 255 255 255;
+  --accent-soft: 220 239 230;
+  --warn: 180 83 9;
+  --info: 29 95 168;
+  --danger: 180 35 24;
+  --gold: 185 124 6;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: 13 20 18;
+    --surface: 20 30 27;
+    --surface-2: 27 40 36;
+    --fg: 229 238 234;
+    --muted: 152 170 162;
+    --line: 40 55 47;
+    --accent: 67 193 143;
+    --accent-fg: 5 19 13;
+    --accent-soft: 20 53 40;
+    --warn: 242 163 58;
+    --info: 130 182 238;
+    --danger: 244 122 114;
+    --gold: 240 180 60;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-size: 15px;
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+@layer components {
+  .gutter {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .eyebrow {
+    @apply font-mono text-[11.5px] uppercase tracking-[0.08em] text-muted;
+  }
+  .input {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm placeholder:text-muted/70;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
