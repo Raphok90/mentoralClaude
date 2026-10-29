@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Phone } from "lucide-react";
+import { EARLY_JOIN_MINUTES, callState } from "../lib/calls";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../components/Toast";
 import { Avatar, Button, Card, Empty, Field, Input, Modal, PageHeader, Spinner, StatusPill, Textarea, buttonClass, cx } from "../components/ui";
@@ -103,7 +104,13 @@ export default function Sessions() {
                       </a>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {callState(b) === "open" && (
+                      <Link to={`/call/${b.id}`} className={buttonClass("primary", "sm")}><Phone className="size-3.5" /> Join call</Link>
+                    )}
+                    {callState(b) === "too-early" && (
+                      <span className="text-xs text-muted">Call opens {EARLY_JOIN_MINUTES} min before</span>
+                    )}
                     {b.status !== "declined" && b.status !== "cancelled" && (
                       <Link to={`/messages/${b.id}`} className={buttonClass("ghost", "sm")}>Message</Link>
                     )}

@@ -6,7 +6,8 @@ import { useToast } from "../components/Toast";
 import { GuideCard } from "../components/GuideCard";
 import { Avatar, Button, Card, Empty, Rating, buttonClass } from "../components/ui";
 import { fetchAvailability, fetchDirectory, hasSlotSoon, setBookingStatus, useBookings } from "../lib/api";
-import { formatDay, hhmm, isPast } from "../lib/dates";
+import { callState } from "../lib/calls";
+import { formatDay, hhmm } from "../lib/dates";
 import { matchGuide, type Match } from "../lib/match";
 import { errorMessage, supabase } from "../lib/supabase";
 import type { Booking, DirectoryGuide, Goal } from "../lib/types";
@@ -32,7 +33,10 @@ function NextSession({ b, asGuide }: { b: Booking; asGuide: boolean }) {
           with {other?.full_name ?? "your guide"} · {formatDay(b.date)} at {hhmm(b.start_time)} · {b.mode}
         </p>
       </div>
-      <Link to={`/messages/${b.id}`} className={buttonClass("soft", "sm")}>Open chat</Link>
+      <div className="flex flex-wrap gap-2">
+        {callState(b) === "open" && <Link to={`/call/${b.id}`} className={buttonClass("primary", "sm")}>Join call</Link>}
+        <Link to={`/messages/${b.id}`} className={buttonClass("soft", "sm")}>Open chat</Link>
+      </div>
     </Card>
   );
 }
@@ -48,7 +52,7 @@ export default function Dashboard() {
   const mine = useMemo(() => {
     const asLearner = bookings.filter((b) => b.requester_id === user?.id);
     const asGuide = bookings.filter((b) => b.provider_user_id === user?.id);
-    const upcoming = (list: Booking[]) => list.filter((b) => b.status === "accepted" && !isPast(b.date, b.start_time));
+    const upcoming = (list: Booking[]) => list.filter((b) => b.status === "accepted" && callState(b) !== "ended");
     return { asLearner, asGuide, upcomingL: upcoming(asLearner), upcomingG: upcoming(asGuide) };
   }, [bookings, user]);
 

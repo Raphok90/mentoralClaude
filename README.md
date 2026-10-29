@@ -45,6 +45,19 @@ You need Node.js 18 or newer.
 - **Authentication → Providers → Google:** turn it on and paste a Client ID and Secret from Google Cloud Console (APIs & Services → Credentials → OAuth client ID → Web application). In Google, add `https://<your-project-ref>.supabase.co/auth/v1/callback` as an authorised redirect URI.
 - **Authentication → Emails:** the built-in email sender has a low hourly limit. Before launch, connect your own SMTP service (for example Resend or Brevo) under **Project Settings → Authentication → SMTP**.
 
+## Audio and video calls (Daily)
+
+Accepted sessions get a private in-app call. Learners and guides choose **Audio only** or **Video**. The call opens 15 minutes before the start time and closes 30 minutes after the session should end.
+
+How it works: the browser calls the `call-token` Edge Function (`supabase/functions/call-token`). It checks that the signed-in user is the guide or learner of an accepted session, creates a private Daily room for that session, and returns a short-lived meeting pass. The Daily API key stays on the server.
+
+Setup:
+1. Create a free account at https://www.daily.co and copy your **API key** from the Developers page.
+2. In Supabase, open **Edge Functions → Secrets** and add `DAILY_API_KEY` with that key.
+3. Deploy the function: **Edge Functions → Deploy a new function → Via Editor**, name it `call-token`, paste `supabase/functions/call-token/index.ts`, and deploy. Or with the Supabase CLI: `npx supabase functions deploy call-token --project-ref <your-ref>`.
+
+Session times are treated as West Africa Time (UTC+1) by the server.
+
 ## Deploy worldwide (free)
 
 The app is a static site, so any static host works. With **Cloudflare Pages**:

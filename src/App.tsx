@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Suspense, lazy, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { isConfigured } from "./lib/supabase";
@@ -19,6 +19,9 @@ import BecomeGuide from "./pages/BecomeGuide";
 import GuideSettings from "./pages/GuideSettings";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
+
+// The call library is large, so it only downloads when someone opens a call.
+const Call = lazy(() => import("./pages/Call"));
 import { About, Guidelines, NotFound, Privacy, Terms } from "./pages/Static";
 import Setup from "./pages/Setup";
 
@@ -53,6 +56,7 @@ export default function App() {
       <Route path="/bookings" element={inShell(<Sessions />)} />
       <Route path="/messages" element={inShell(<Messages />)} />
       <Route path="/messages/:bookingId" element={inShell(<Messages />)} />
+      <Route path="/call/:bookingId" element={inShell(<Suspense fallback={<Spinner />}><Call /></Suspense>)} />
       <Route path="/goals" element={inShell(<Goals />)} />
       <Route path="/saved" element={inShell(<Saved />)} />
       <Route path="/become-guide" element={inShell(<BecomeGuide />)} />
