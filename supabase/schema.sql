@@ -223,6 +223,8 @@ select r.id, r.guide_id, r.rating, r.comment, r.created_at,
 from reviews r join profiles p on p.id = r.author_id
 where not r.hidden;
 
+-- These views are public on purpose (verified guides and visible reviews only) and are read-only.
+revoke all on public.guide_directory, public.guide_reviews from anon, authenticated;
 grant select on public.guide_directory, public.guide_reviews to anon, authenticated;
 
 -- Slots already held by pending or accepted bookings, without revealing who booked them.
